@@ -1,19 +1,24 @@
 import requests
 import json
-import threading
 import sys
+import os
+import time
+
+#libraries for date
+from datetime import date, time, datetime
 
 # Replace this with your ACTIVE Webhook URL from Make.com
-MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/1s442riabjmpt3dubtwyv9hadn815ek1"
-exit_event = threading.Event()
 
-startProcess = False
+MAKE_WEBHOOK_URL = os.environ.get('MAKE_WEBHOOK_URL')
+
+#MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/1s442riabjmpt3dubtwyv9hadn815ek1"
+
 
 # The data you want to send
 payload = {
     "sender_name": "Ron",
     "recipient": "migelbonie@gmail.com",
-    "message": "blank",
+    "message": "",
     "status": "Success"
 }
 
@@ -80,69 +85,21 @@ def fAutomationTask(stop_event): #2
     
 #2
 
-def fInputInfo(pPrompt):#2
-
-    while True: #3
-        ch = input(f"\npress b to back, enter {pPrompt}: ")
-        if ch == '':#4
-            print(f"\nblank input is not valid")
-            continue
-        #5
-        return ch
-    #3
-#2
 def fMain(): #2
     
-    global exit_event
-    global startProcess
-    print("Initiating email blast via Make.com...")
-    
-    # Inside fMain, when you start the thread:
-    background_thread = threading.Thread(target=fAutomationTask, args=(exit_event,))
-    background_thread.start()
-    
-
-    # 3. Main Thread (Thread B) stays here in standby mode
-    print("System is running..")
+    print("start running main")
 
     vIndex = 0
     while True: #3
-        print(f"\ninformation last email: {payload['recipient']}\nlast message {payload['message']}")
-        ch= input(f"\ninput q to leave, main menu i input new send set ")
-        
-        if ch.lower() == 'q':#4            
 
-            #set daemon = True to force it to close, and not finishing the function work
-            # threading.Thread(target=fAutomationTask, daemon= True) 
-            exit_event.set()
-            background_thread.join()
-            print("\nexiting prog...")
-            sys.exit()    
-            return
-        
-        elif ch.lower() == 'i': #4
-            #input process    
-            startProcess = False
-            vEmail = fInputInfo("Email")
-                
-            if vEmail.lower() == 'b':#10
-                
-                continue        
-            #10
-            
-            payload['recipient'] = vEmail
-            
-            vMessage = fInputInfo("Message")
-                
-            if vMessage.lower() == 'b':#10
-                continue        
-            #10
-            
-            payload['message'] = vMessage
-
-            startProcess = True
+        while dSec < 60: #4
+            time.sleep(1)
         #4
+        compDateTime = datetime.now()
+        payload["message"] = f"{compDateTime.strftime("Date: %Y-%m-%d \nTime: %H:%M:%S=")}\nTo whom it may concern\nsended email for testing...\n\nthanks\nron sm" 
+        fSendData()
     #3
+
 #2
 
 fMain()
