@@ -5,7 +5,7 @@ import os
 import time
 
 #libraries for date
-from datetime import date, time, datetime
+from datetime import datetime
 
 # Replace this with your ACTIVE Webhook URL from Make.com
 
@@ -47,56 +47,22 @@ def fSendData():#2
 
 #2
 
-def fAutomationTask(stop_event): #2
-    """This function runs in the background (Thread A)"""
-    global startProcess
-    print("\n--- Background Automation Started ---")
-    
-    while not stop_event.is_set():#10
-        # wait() returns True if the event was set (q was pressed)
-        # and False if the timer just ran out normally
-
-        #print(f"\ndebug before while dSec")
-
-        dSec = 0
-        while dSec < 60 : #11
-
-            stop_event.wait(timeout=1)
-
-            #print(f"\ndebug {dSec= }")    
-            
-            #standby
-            if startProcess == False:#12
-                while not startProcess :#14
-                    pass #to stand by here
-                #14
-                print(f"\nstarting to count in 60 seconds")
-                dSec = 0 
-            #12
-            dSec += 1
-        #11
-
-        fSendData()
-            
-    #10
-    
-    print("\nBackground thread safely stopped.")
-    
-    
-#2
-
 def fMain(): #2
     
     print("start running main")
 
-    vIndex = 0
+    vTotalSec = 30
     while True: #3
-
-        while dSec < 60: #4
+        dSec = 0
+        print()
+        while dSec < vTotalSec: #4
             time.sleep(1)
+            print(f"loop running at {dSec}")
+            dSec +=1
         #4
         compDateTime = datetime.now()
-        payload["message"] = f"{compDateTime.strftime("Date: %Y-%m-%d \nTime: %H:%M:%S=")}\nTo whom it may concern\nsended email for testing...\n\nthanks\nron sm" 
+        print(f"\ni will send it at datetime\n{compDateTime.strftime("Date: %Y-%m-%d \nTime: %H:%M:%S")}")
+        payload["message"] = f"{compDateTime.strftime("Date: %Y-%m-%d \nTime: %H:%M:%S")}<br><br>To whom it may concern<br>     sended email for testing...<br><br><br>thanks<br>ron sm" 
         fSendData()
     #3
 
