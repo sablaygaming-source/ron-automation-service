@@ -4,6 +4,10 @@ import sys
 import os
 import time
 
+import threading
+from flask import Flask
+
+
 #libraries for date
 from datetime import datetime
 
@@ -26,6 +30,18 @@ headers = {
     "Content-Type": "application/json"
 }
 
+# 1. Create a tiny web server to keep Render happy
+app = Flask(__name__)
+
+@app.route('/')
+def health_check():
+    return "Automation is running!", 200
+
+def run_dummy_server():
+    # Render provides a $PORT environment variable automatically
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
 def fSendData():#2
     print("\n\nnow sending...")
     try:
@@ -47,8 +63,17 @@ def fSendData():#2
 
 #2
 
+# 3. In your fMain(), start this server in a new thread
 def fMain(): #2
-    
+    # Start the "Port Listener" so Render doesn't time out
+    server_thread = threading.Thread(target=run_dummy_server)
+    server_thread.daemon = True
+    server_thread.start()
+
+    # ... Now run your existing Automation Logic ...
+    print("Automation & Health Check Server Started!")
+    # [Your existing code here]
+
     print("start running main")
 
     vTotalSec = 30
@@ -65,9 +90,6 @@ def fMain(): #2
         payload["message"] = f"{compDateTime.strftime("Date: %Y-%m-%d \nTime: %H:%M:%S")}<br><br>To whom it may concern<br>     sended email for testing...<br><br><br>thanks<br>ron sm" 
         fSendData()
     #3
-
 #2
 
 fMain()
-
-
