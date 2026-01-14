@@ -15,7 +15,7 @@ from datetime import datetime
 
 MAKE_WEBHOOK_URL = os.environ.get('MAKE_WEBHOOK_URL')
 
-#MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/1s442riabjmpt3dubtwyv9hadn815ek1"
+#MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/1s442riabjmpt3dubtwyv9hadn815ek1/"
 
 
 # The data you want to send
